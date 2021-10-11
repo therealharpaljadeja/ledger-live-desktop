@@ -9,7 +9,6 @@ import { setLanguage } from "~/renderer/actions/settings";
 import { langAndRegionSelector } from "~/renderer/reducers/settings";
 import Select from "~/renderer/components/Select";
 import Track from "~/renderer/analytics/Track";
-import moment from "moment";
 
 export const languageLabels = {
   de: "Deutsch",
