@@ -3,6 +3,7 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import _ from "lodash";
 import { setLocale, setRegion } from "~/renderer/actions/settings";
 import { localeSelector } from "~/renderer/reducers/settings";
 import Select from "~/renderer/components/Select";
@@ -13,8 +14,10 @@ const regions = Object.keys(regionsByKey)
   .map(key => {
     const [language, region] = key.split("-");
     const locale = key;
-    const languageDisplayName = new Intl.DisplayNames([locale], { type: "language" }).of(language);
-    const regionDisplayName = new Intl.DisplayNames([locale], { type: "region" }).of(region);
+    const languageDisplayName = new window.Intl.DisplayNames([locale], { type: "language" }).of(
+      language,
+    );
+    const regionDisplayName = new window.Intl.DisplayNames([locale], { type: "region" }).of(region);
     const label = `${_.upperFirst(regionDisplayName)} (${_.upperFirst(languageDisplayName)})`;
     return { value: key, locale: key, language, region, label };
   })
