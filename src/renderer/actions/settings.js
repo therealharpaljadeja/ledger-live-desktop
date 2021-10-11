@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import type { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
 import type { DeviceModelId } from "@ledgerhq/devices";
 import type { PortfolioRange } from "@ledgerhq/live-common/lib/portfolio/v2/types";
 import type { Currency } from "@ledgerhq/live-common/lib/types";
@@ -56,7 +57,10 @@ export const setCounterValue = (counterValue: string) =>
 export const setLanguage = (language: ?string) => saveSettings({ language });
 export const setTheme = (theme: ?string) => saveSettings({ theme });
 export const setRegion = (region: ?string) => saveSettings({ region });
-export const setLocale = (locale: ?string) => saveSettings({ locale });
+export const setLocale = (locale: string) => {
+  moment.locale(locale);
+  saveSettings({ locale });
+};
 export const setUSBTroubleshootingIndex = (USBTroubleshootingIndex?: number) =>
   saveSettings({ USBTroubleshootingIndex });
 

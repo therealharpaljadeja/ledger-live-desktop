@@ -60,7 +60,6 @@ const LanguageSelect = () => {
   );
 
   useEffect(() => {
-    moment.locale(language);
     i18n.changeLanguage(language);
   }, [i18n, language]);
 
