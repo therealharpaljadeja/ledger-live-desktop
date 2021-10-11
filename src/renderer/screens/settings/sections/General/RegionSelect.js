@@ -2,6 +2,7 @@
 
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import { setLocale, setRegion } from "~/renderer/actions/settings";
 import { localeSelector } from "~/renderer/reducers/settings";
 import Select from "~/renderer/components/Select";
@@ -25,6 +26,7 @@ const RegionSelect = () => {
 
   const handleChangeRegion = useCallback(
     ({ locale, region }: { locale: string, region: string }) => {
+      moment.locale(locale);
       dispatch(setRegion(region));
       dispatch(setLocale(locale));
     },
