@@ -367,10 +367,23 @@ export const userLangAndRegionSelector = (
   }
 };
 
+const isValidRegionLocale = (locale: string) => {
+  return regionsByKey.hasOwnProperty(locale);
+};
+
 const localeFallbackToLanguageSelector = (state: State): { locale: string } => {
-  const { language, locale } = state.settings;
-  if (locale && regionsByKey.hasOwnProperty(locale)) return { locale };
-  else return { locale: language || DEFAULT_LOCALE };
+  const { language, locale, region } = state.settings;
+  if (!locale && language) {
+    /*
+      Handle settings data saved with the old logic, where the region settings'
+        entire locale was not being saved (the locale was split in 2 strings on
+        "-" and only the 2nd part was saved)
+        e.g: for "fr-BE" we would only save {region: "BE"}
+    */
+    const potentialLocale = region ? `${language}-${region}` : language;
+    if (isValidRegionLocale(potentialLocale)) return { locale: potentialLocale };
+  } else if (locale && isValidRegionLocale(locale)) return { locale };
+  return { locale: language || DEFAULT_LOCALE };
 };
 
 export const langAndRegionSelector: OutputSelector<State, void, LangAndRegion> = createSelector(
