@@ -1124,7 +1124,7 @@
       }
     },
     "connectedscreen": {
-      "info": "You can now access the dApp on your desktop.",
+      "info": "You can now access the {{name}} dApp on your web browser.",
       "warning": "Sharing receive addresses from dApps is not secure. Always use Ledger Live when sharing your address to receive funds.",
       "disconnected": "There is a connection problem between the dApp, WalletConnect and Ledger Live. Wait a few moments or relaunch the connection"
     }
@@ -1783,16 +1783,16 @@
   },
   "elrond": {
     "account": {
-     "subHeader": {
-       "cardTitle": "Powered by Elrond",
-       "moreInfo": "More info",
-       "drawerTitle": "Elrond integration",
-       "title": "Elrond eGold (EGLD) token is now available on Ledger Live",
-       "description": "You can now safely secure your eGold (EGLD) tokens and manage them through Ledger Live.",
-       "description2": "The Elrond eGold (EGLD) Token is native to the Elrond Network and will be used for everything from transactions, staking, smart contracts, governance and validator rewards.",
-       "description3": "We are actively working with the Elrond team to add more functionality, such as staking, native ESDT (Elrond Standard Digital Token) support, and more.",
-       "website": "The Internet Scale Blockchain"
-     }
+      "subHeader": {
+        "cardTitle": "Powered by Elrond",
+        "moreInfo": "More info",
+        "drawerTitle": "Elrond integration",
+        "title": "Elrond eGold (EGLD) token is now available on Ledger Live",
+        "description": "You can now safely secure your eGold (EGLD) tokens and manage them through Ledger Live.",
+        "description2": "The Elrond eGold (EGLD) Token is native to the Elrond Network and will be used for everything from transactions, staking, smart contracts, governance and validator rewards.",
+        "description3": "We are actively working with the Elrond team to add more functionality, such as staking, native ESDT (Elrond Standard Digital Token) support, and more.",
+        "website": "The Internet Scale Blockchain"
+      }
     }
   },
   "tron": {
