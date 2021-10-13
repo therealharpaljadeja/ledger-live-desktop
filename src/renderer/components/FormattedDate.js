@@ -8,7 +8,7 @@ type Props = {
 };
 
 /* TODO: Replace this function with the useDateTimeFormat hook */
-function FormattedDate({ date, format = "LLL" }: Props) {
+function FormattedDate({ date, format = "L LT" }: Props) {
   return moment(date).format(format);
 }
 
