@@ -8,11 +8,10 @@ import { useAppsSections } from "@ledgerhq/live-common/lib/apps/react";
 
 import { DeviceInfo } from "@ledgerhq/live-common/lib/types/manager";
 import { State, Action, AppsDistribution } from "@ledgerhq/live-common/lib/apps/types";
-import { Flex } from "@ledgerhq/react-ui";
+import { Flex, SearchInput } from "@ledgerhq/react-ui";
 import { currenciesSelector } from "~/renderer/reducers/accounts";
 import UpdateAllApps from "./UpdateAllApps";
 import Placeholder from "./Placeholder";
-import Card from "~/renderer/components/Box/Card";
 import Box from "~/renderer/components/Box";
 import Text from "~/renderer/components/Text";
 import TagsTabBar from "~/renderer/components/TagsTabBar";
@@ -26,11 +25,9 @@ import { openModal } from "~/renderer/actions/modals";
 import debounce from "lodash/debounce";
 import InstallSuccessBanner from "./InstallSuccessBanner";
 import SearchBox from "../../accounts/AccountList/SearchBox";
-import { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
-const StickyContainer: ThemedComponent<{}> = styled.div`
+const StickyContainer = styled.div`
   background-color: ${p => p.theme.colors.palette.neutral.c00};
-  background-color: lightgreen;
   position: sticky;
   top: -${p => p.theme.space[3]}px;
   right: 0px;
@@ -56,7 +53,6 @@ const Divider = styled.div`
   left: 0px;
   right: 0px;
   margin: 0px -40px 0px -40px;
-  /* right: -40px; */
   background-color: ${p => p.theme.colors.palette.neutral.c40};
 `;
 
@@ -93,8 +89,6 @@ const AppsList = ({
   const [appFilter, setFilter] = useState("all");
   const [sort, setSort] = useState({ type: "marketcap", order: "desc" });
   const [activeTab, setActiveTab] = useState(0);
-
-  const tabs = [t("manager.tabs.appCatalog"), t("manager.tabs.appsOnDevice")];
 
   const onTextChange = useCallback(
     (evt: SyntheticInputEvent<HTMLInputElement>, v) => setQuery(evt.target.value),
@@ -213,9 +207,9 @@ const AppsList = ({
         {!noAppToShow && (
           <FilterHeaderContainer isIncomplete={isIncomplete}>
             <Box flex="1" horizontal height={40}>
-              <SearchBox
+              <SearchInput
                 autoFocus
-                onTextChange={onTextChange}
+                onChange={onTextChange}
                 search={query}
                 placeholder={t(
                   !isDeviceTab ? "manager.tabs.appCatalogSearch" : "manager.tabs.appOnDeviceSearch",
