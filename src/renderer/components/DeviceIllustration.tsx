@@ -52,8 +52,8 @@ const DeviceIllustration = ({ deviceId = "nanoS", size, height, width, ...props 
   const illus = illustrations[deviceId];
   if (!illus) return null;
   const { Illustration, width: iW, height: iH } = illus;
-  const sH = `${height || size || iH}px`;
-  const sW = `${width || size ? (size / iW) * iH : iW}px`;
+  const sH = `${height ? height : size || iH}px`;
+  const sW = `${width ? width : size ? (size / iH) * iW : iW}px`;
   return (
     <Illustration
       style={{

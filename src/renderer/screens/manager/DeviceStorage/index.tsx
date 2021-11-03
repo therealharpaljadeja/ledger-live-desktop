@@ -14,36 +14,8 @@ import { ThemedComponent } from "~/renderer/styles/StyleProvider";
 import ByteSize from "~/renderer/components/ByteSize";
 import Tooltip from "~/renderer/components/Tooltip";
 import Box from "~/renderer/components/Box";
-
+import DeviceIllustration from "~/renderer/components/DeviceIllustration";
 import StorageBar from "./StorageBar";
-import nanoS from "./images/nanoS.png";
-import nanoX from "./images/nanoX.png";
-import blue from "./images/blue.png";
-
-const illustrations = { // TODO: proper illustrations
-  nanoS,
-  nanoX,
-  blue,
-};
-
-const IllustrationContainer = styled.div`
-  height: 132px;
-  width: 119px;
-  position: relative;
-`;
-
-export const DeviceIllustration: ThemedComponent<{}> = styled.img.attrs(p => ({
-  src: illustrations[p.deviceModel.id],
-}))`
-  position: absolute;
-  top: 0;
-  left: 50%;
-  max-height: 100%;
-  filter: drop-shadow(0px 5px 7px ${p => p.theme.colors.palette.text.shade10});
-  transform: translateX(-50%);
-  user-select: none;
-  pointer-events: none;
-`;
 
 type Props = {
   deviceModel: DeviceModel;
@@ -84,9 +56,7 @@ const DeviceStorage = ({
 
   return (
     <FlexBox horizontal alignItems="center">
-      <IllustrationContainer>
-        <DeviceIllustration deviceModel={deviceModel} />
-      </IllustrationContainer>
+      <DeviceIllustration height={132} width={120} deviceId={deviceModel?.id} />
       <FlexBox p="16px 0px 16px 16px" flexDirection="column" flex={1}>
         <FlexBox horizontal mb="8px" alignItems="center">
           <Text type="h3" uppercase color="palette.neutral.c100" fontSize="28px">
