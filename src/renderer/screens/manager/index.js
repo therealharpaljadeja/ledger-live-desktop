@@ -21,14 +21,14 @@ const Manager = () => {
   const onResult = useCallback(result => setResult(result), []);
 
   return (
-    <>
+    <div style={{borderLeft: 'solid lightgrey 1px', padding: "0px 40px"}}>
       <SyncSkipUnderPriority priority={999} />
       {result ? (
         <Dashboard {...result} onReset={onReset} appsToRestore={appsToRestore} />
       ) : (
         <DeviceAction onResult={onResult} action={action} request={null} />
       )}
-    </>
+    </div>
   );
 };
 

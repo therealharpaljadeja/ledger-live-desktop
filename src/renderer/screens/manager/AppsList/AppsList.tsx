@@ -1,23 +1,20 @@
-// @flow
 import React, { useState, memo, useCallback, useEffect, useRef } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
+import { Trans, TFunction } from "react-i18next";
 
 import { useAppsSections } from "@ledgerhq/live-common/lib/apps/react";
 
-import type { TFunction } from "react-i18next";
-import type { DeviceInfo } from "@ledgerhq/live-common/lib/types/manager";
-import type { State, Action, AppsDistribution } from "@ledgerhq/live-common/lib/apps/types";
-import { Tag } from "@ledgerhq/react-ui";
+import { DeviceInfo } from "@ledgerhq/live-common/lib/types/manager";
+import { State, Action, AppsDistribution } from "@ledgerhq/live-common/lib/apps/types";
+import { Flex } from "@ledgerhq/react-ui";
 import { currenciesSelector } from "~/renderer/reducers/accounts";
 import UpdateAllApps from "./UpdateAllApps";
 import Placeholder from "./Placeholder";
 import Card from "~/renderer/components/Box/Card";
 import Box from "~/renderer/components/Box";
 import Text from "~/renderer/components/Text";
-import TabBar from "~/renderer/components/TabBar";
 import TagsTabBar from "~/renderer/components/TagsTabBar";
 import Item from "./Item";
 import Filter from "./Filter";
@@ -29,49 +26,50 @@ import { openModal } from "~/renderer/actions/modals";
 import debounce from "lodash/debounce";
 import InstallSuccessBanner from "./InstallSuccessBanner";
 import SearchBox from "../../accounts/AccountList/SearchBox";
-import type { ThemedComponent } from "~/renderer/styles/StyleProvider";
+import { ThemedComponent } from "~/renderer/styles/StyleProvider";
 
-// sticky top bar with extra width to cover card boxshadow underneath
-export const StickyTabBar: ThemedComponent<{}> = styled.div`
+const StickyContainer: ThemedComponent<{}> = styled.div`
+  background-color: ${p => p.theme.colors.palette.neutral.c00};
+  background-color: lightgreen;
   position: sticky;
-  background-color: ${p => p.theme.colors.palette.background.default};
   top: -${p => p.theme.space[3]}px;
-  left: 0;
-  right: 0;
-  padding: ${p => p.theme.space[3]}px ${p => p.theme.space[3]}px 0 ${p => p.theme.space[3]}px;
-  margin-left: -${p => p.theme.space[3]}px;
-  height: ${p => p.theme.sizes.topBarHeight}px;
-  width: 100%;
+  right: 0px;
+  left: 0px;
   box-sizing: content-box;
   z-index: 1;
 `;
 
-const FilterHeader = styled.div`
+const TabsContainer = styled.div`
+  display: flex;
+  padding: 20px 0px;
+`;
+
+const FilterHeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 10px 20px;
-  margin: 0px;
   align-items: center;
-  background-color: ${p => p.theme.colors.palette.background.paper};
-  box-shadow: 0 1px 0 0 ${p => p.theme.colors.palette.text.shade10};
-  border-radius: 4px 4px 0 0;
-  position: sticky;
-  top: ${p => (p.isIncomplete ? -p.theme.space[3] : p.theme.sizes.topBarHeight)}px;
-  left: 0;
-  right: 0;
-  z-index: 1;
+  padding: 20px 0px;
+`;
+
+const Divider = styled.div`
+  height: 1px;
+  left: 0px;
+  right: 0px;
+  margin: 0px -40px 0px -40px;
+  /* right: -40px; */
+  background-color: ${p => p.theme.colors.palette.neutral.c40};
 `;
 
 type Props = {
-  deviceInfo: DeviceInfo,
-  optimisticState: State,
-  state: State,
-  dispatch: Action => void,
-  isIncomplete: boolean,
-  setAppInstallDep: (*) => void,
-  setAppUninstallDep: (*) => void,
-  t: TFunction,
-  distribution: AppsDistribution,
+  deviceInfo: DeviceInfo;
+  optimisticState: State;
+  state: State;
+  dispatch: (arg: Action) => void;
+  isIncomplete: boolean;
+  setAppInstallDep: (...args: any[]) => void;
+  setAppUninstallDep: (...args: any[]) => void;
+  t: TFunction;
+  distribution: AppsDistribution;
 };
 
 const AppsList = ({
@@ -168,6 +166,23 @@ const AppsList = ({
     ],
   );
 
+  const noAppToShow = isDeviceTab && installedApps.length;
+
+  const filterHeaderRightPart = !isDeviceTab ? (
+    <>
+      <Filter onFilterChange={debounce(setFilter, 100)} filter={appFilter} />
+      <Box ml={3}>
+        <Sort onSortChange={debounce(setSort, 100)} sort={sort} />
+      </Box>
+    </>
+  ) : (
+    <UninstallAllButton
+      installedApps={installedApps}
+      uninstallQueue={uninstallQueue}
+      dispatch={dispatch}
+    />
+  );
+
   return (
     <>
       <InstallSuccessBanner
@@ -184,17 +199,36 @@ const AppsList = ({
         dispatch={dispatch}
         isIncomplete={isIncomplete}
       />
-      {isIncomplete ? null : (
-        <StickyTabBar>
-          <TagsTabBar
-            selectedIndex={activeTab}
-            onSelectedChanged={setActiveTab}
-            tabs={[t("manager.tabs.appCatalog"), t("manager.tabs.appsOnDevice")]}
-          />
-        </StickyTabBar>
-      )}
-      <Card mt={0}>
-        {isDeviceTab && !installedApps.length ? (
+      <StickyContainer>
+        {isIncomplete ? null : (
+          <TabsContainer>
+            <TagsTabBar
+              selectedIndex={activeTab}
+              onSelectedChanged={setActiveTab}
+              tabs={[t("manager.tabs.appCatalog"), t("manager.tabs.appsOnDevice")]}
+            />
+          </TabsContainer>
+        )}
+        <Divider />
+        {!noAppToShow && (
+          <FilterHeaderContainer isIncomplete={isIncomplete}>
+            <Box flex="1" horizontal height={40}>
+              <SearchBox
+                autoFocus
+                onTextChange={onTextChange}
+                search={query}
+                placeholder={t(
+                  !isDeviceTab ? "manager.tabs.appCatalogSearch" : "manager.tabs.appOnDeviceSearch",
+                )}
+                ref={inputRef}
+              />
+            </Box>
+            {filterHeaderRightPart}
+          </FilterHeaderContainer>
+        )}
+      </StickyContainer>
+      <Flex flexDirection="column" ml={9}>
+        {noAppToShow ? (
           <Box py={8}>
             <Text textAlign="center" ff="Inter|SemiBold" fontSize={6}>
               <Trans i18nKey="manager.applist.placeholderNoAppsInstalled" />
@@ -205,35 +239,6 @@ const AppsList = ({
           </Box>
         ) : (
           <>
-            <FilterHeader isIncomplete={isIncomplete}>
-              <Box flex="1" horizontal height={40}>
-                <SearchBox
-                  autoFocus
-                  onTextChange={onTextChange}
-                  search={query}
-                  placeholder={t(
-                    !isDeviceTab
-                      ? "manager.tabs.appCatalogSearch"
-                      : "manager.tabs.appOnDeviceSearch",
-                  )}
-                  ref={inputRef}
-                />
-              </Box>
-              {!isDeviceTab ? (
-                <>
-                  <Filter onFilterChange={debounce(setFilter, 100)} filter={appFilter} />
-                  <Box ml={3}>
-                    <Sort onSortChange={debounce(setSort, 100)} sort={sort} />
-                  </Box>
-                </>
-              ) : (
-                <UninstallAllButton
-                  installedApps={installedApps}
-                  uninstallQueue={uninstallQueue}
-                  dispatch={dispatch}
-                />
-              )}
-            </FilterHeader>
             {displayedAppList.length ? (
               displayedAppList.map(app => mapApp(app, !isDeviceTab))
             ) : (
@@ -247,7 +252,7 @@ const AppsList = ({
             )}
           </>
         )}
-      </Card>
+      </Flex>
     </>
   );
 };

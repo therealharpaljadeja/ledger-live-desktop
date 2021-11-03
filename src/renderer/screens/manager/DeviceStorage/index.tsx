@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { Trans, useTranslation } from "react-i18next";
 
 import manager from "@ledgerhq/live-common/lib/manager";
-import { Icons, Tag, Text } from "@ledgerhq/react-ui";
-import FlexBox from "@ledgerhq/react-ui/components/layout/Flex";
+import { Flex, Icons, Tag, Text } from "@ledgerhq/react-ui";
 
 import { DeviceInfo, FirmwareUpdateContext } from "@ledgerhq/live-common/lib/types/manager";
 import { AppsDistribution } from "@ledgerhq/live-common/lib/apps";
@@ -55,10 +54,10 @@ const DeviceStorage = ({
   const firmwareOutdated = manager.firmwareUnsupported(deviceModel.id, deviceInfo) || firmware;
 
   return (
-    <FlexBox horizontal alignItems="center">
+    <Flex horizontal alignItems="center">
       <DeviceIllustration height={132} width={120} deviceId={deviceModel?.id} />
-      <FlexBox p="16px 0px 16px 16px" flexDirection="column" flex={1}>
-        <FlexBox horizontal mb="8px" alignItems="center">
+      <Flex p="16px 0px 16px 16px" flexDirection="column" flex={1}>
+        <Flex horizontal mb="8px" alignItems="center">
           <Text type="h3" uppercase color="palette.neutral.c100" fontSize="28px">
             {deviceModel.productName}
           </Text>
@@ -67,8 +66,8 @@ const DeviceStorage = ({
               <Icons.CircledCheckRegular color="palette.success.c100" ml="6px" size={24} />
             </Tooltip>
           </Box>
-        </FlexBox>
-        <FlexBox horizontal mb="18px" alignItems="center">
+        </Flex>
+        <Flex horizontal mb="18px" alignItems="center">
           <Tag active type="opacity" mr="8px">
             v{deviceInfo.version}
           </Tag>
@@ -85,7 +84,7 @@ const DeviceStorage = ({
               />
             )}
           </Text>
-        </FlexBox>
+        </Flex>
         <StorageBar
           distribution={distribution}
           deviceInfo={deviceInfo}
@@ -95,8 +94,8 @@ const DeviceStorage = ({
           uninstallQueue={uninstallQueue}
           jobInProgress={jobInProgress}
         />
-        <FlexBox horizontal mt="12px" justifyContent="space-between" alignItems="center">
-          <FlexBox horizontal>
+        <Flex horizontal mt="12px" justifyContent="space-between" alignItems="center">
+          <Flex horizontal>
             <InfoParticle
               label={t("manager.deviceStorage.used")}
               value={
@@ -121,8 +120,8 @@ const DeviceStorage = ({
               label={t("manager.deviceStorage.installed")}
               value={!isIncomplete ? distribution.apps.length : "—"}
             />
-          </FlexBox>
-          <FlexBox horizontal alignItems="center">
+          </Flex>
+          <Flex horizontal alignItems="center">
             <Text uppercase variant="subtitle" ff="Inter|SemiBold" color="palette.light.neutral.c80" fontSize={3}>
               {isIncomplete ? (
                 <Trans i18nKey="manager.deviceStorage.incomplete" />
@@ -141,10 +140,10 @@ const DeviceStorage = ({
                 <Trans i18nKey="manager.deviceStorage.noFreeSpace" />
               )}
             </Text>
-          </FlexBox>
-        </FlexBox>
-      </FlexBox>
-    </FlexBox>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 };
 
