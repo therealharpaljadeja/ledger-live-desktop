@@ -1,4 +1,3 @@
-// @flow
 import React, { useState, useCallback } from "react";
 import { createAction } from "@ledgerhq/live-common/lib/hw/actions/manager";
 import Dashboard from "~/renderer/screens/manager/Dashboard";
@@ -21,14 +20,14 @@ const Manager = () => {
   const onResult = useCallback(result => setResult(result), []);
 
   return (
-    <>
+    <div style={{ borderLeft: "solid lightgrey 1px", padding: "0px 40px" }}>
       <SyncSkipUnderPriority priority={999} />
       {result ? (
         <Dashboard {...result} onReset={onReset} appsToRestore={appsToRestore} />
       ) : (
         <DeviceAction onResult={onResult} action={action} request={null} />
       )}
-    </>
+    </div>
   );
 };
 
