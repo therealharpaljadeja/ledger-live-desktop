@@ -24,7 +24,6 @@ import { openModal } from "~/renderer/actions/modals";
 
 import debounce from "lodash/debounce";
 import InstallSuccessBanner from "./InstallSuccessBanner";
-import SearchBox from "../../accounts/AccountList/SearchBox";
 
 const StickyContainer = styled.div`
   background-color: ${p => p.theme.colors.palette.neutral.c00};
@@ -69,7 +68,6 @@ type Props = {
 };
 
 const AppsList = ({
-  deviceInfo,
   optimisticState,
   state,
   dispatch,
@@ -77,7 +75,6 @@ const AppsList = ({
   setAppInstallDep,
   setAppUninstallDep,
   t,
-  distribution,
 }: Props) => {
   const { push } = useHistory();
   const { search } = useLocation();
@@ -99,6 +96,7 @@ const AppsList = ({
   useEffect(() => {
     setQuery("");
   }, [activeTab]);
+
   const isDeviceTab = activeTab === 1;
 
   /** retrieve search query from router location search params */
@@ -160,7 +158,7 @@ const AppsList = ({
     ],
   );
 
-  const noAppToShow = isDeviceTab && installedApps.length;
+  const noAppToShow = isDeviceTab && !installedApps.length;
 
   const filterHeaderRightPart = !isDeviceTab ? (
     <>
@@ -221,7 +219,7 @@ const AppsList = ({
           </FilterHeaderContainer>
         )}
       </StickyContainer>
-      <Flex flexDirection="column" ml={9}>
+      <Flex flexDirection="column">
         {noAppToShow ? (
           <Box py={8}>
             <Text textAlign="center" ff="Inter|SemiBold" fontSize={6}>
