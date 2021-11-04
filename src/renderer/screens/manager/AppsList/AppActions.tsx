@@ -8,6 +8,8 @@ import manager from "@ledgerhq/live-common/lib/manager";
 
 import { App } from "@ledgerhq/live-common/lib/types/manager";
 import { State, Action, InstalledItem } from "@ledgerhq/live-common/lib/apps/types";
+import { Flex, Text, Icons } from "@ledgerhq/react-ui";
+import Link from "@ledgerhq/react-ui/components/cta/Link";
 
 import styled from "styled-components";
 import { Trans } from "react-i18next";
@@ -15,7 +17,7 @@ import { Trans } from "react-i18next";
 import { openURL } from "~/renderer/linking";
 import { urls } from "~/config/urls";
 
-import Text from "~/renderer/components/Text";
+import OldText from "~/renderer/components/Text";
 import Tooltip from "~/renderer/components/Tooltip";
 import Button from "~/renderer/components/Button";
 import Progress from "~/renderer/screens/manager/AppsList/Progress";
@@ -23,11 +25,11 @@ import Box from "~/renderer/components/Box/Box";
 
 import { colors } from "~/renderer/styles/theme";
 
-import AccountAdd from "~/renderer/icons/AccountAdd";
 import IconCheck from "~/renderer/icons/Check";
 import IconTrash from "~/renderer/icons/Trash";
 import IconArrowDown from "~/renderer/icons/ArrowDown";
 import LinkIcon from "~/renderer/icons/LinkIcon";
+import { track } from "~/renderer/analytics/segment";
 
 const AppActionsWrapper = styled.div`
   display: flex;
@@ -36,18 +38,7 @@ const AppActionsWrapper = styled.div`
   justify-content: flex-end;
   flex-direction: row;
   > *:not(:last-child) {
-    margin-right: 10px;
-  }
-`;
-
-const SuccessInstall = styled.div`
-  color: ${p => p.theme.colors.positiveGreen};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 10px 20px;
-  > svg {
-    padding-right: 5px;
+    margin-right: 16px;
   }
 `;
 
@@ -100,15 +91,33 @@ const AppActions: React$ComponentType<Props> = React.memo(
     }, [dispatch, name, needsInstallDeps, setAppInstallDep]);
 
     const onUninstall = useCallback(() => {
+      const event = "Manager Uninstall Click";
+      const eventProperties = {
+        appName: name,
+        appVersion: app.version,
+      };
+      track(event, eventProperties);
       if (needsUninstallDeps && setAppUninstallDep) setAppUninstallDep(needsUninstallDeps);
       else dispatch({ type: "uninstall", name });
     }, [dispatch, name, needsUninstallDeps, setAppUninstallDep]);
 
     const onAddAccount = useCallback(() => {
       if (addAccount) addAccount();
-    }, [addAccount]);
+      const event = "Manager AddAccount Click";
+      const eventProperties = {
+        appName: name,
+        appVersion: app.version,
+      };
+      track(event, eventProperties);
+    }, [addAccount, name, app]);
 
     const onSupportLink = useCallback(() => {
+      const event = "Manager SupportLink Click";
+      const eventProperties = {
+        appName: name,
+        appVersion: app.version,
+      };
+      track(event, eventProperties);
       openURL(urls.appSupport[app.name] || urls.appSupport.default);
     }, [app.name]);
 
@@ -148,27 +157,15 @@ const AppActions: React$ComponentType<Props> = React.memo(
                     )
                   }
                 >
-                  <Button
-                    color={canAddAccount ? "palette.primary.main" : "palette.text.shade40"}
-                    inverted
-                    style={{ display: "flex", backgroundColor: "rgba(0,0,0,0)" }}
-                    fontSize={3}
-                    disabled={!canAddAccount}
+                  <Link
+                    iconPosition="left"
                     onClick={onAddAccount}
-                    justifyContent="center"
-                    event="Manager AddAccount Click"
-                    eventProperties={{
-                      appName: name,
-                      appVersion: app.version,
-                    }}
+                    disabled={!canAddAccount}
+                    Icon={Icons.WalletAddMedium}
+                    type="shade"
                   >
-                    <Box horizontal alignContent="center" justifyContent="center">
-                      <AccountAdd size={16} />
-                      <Text style={{ marginLeft: 8 }}>
-                        <Trans i18nKey="manager.applist.item.addAccount" />
-                      </Text>
-                    </Box>
-                  </Button>
+                    <Trans i18nKey="manager.applist.item.addAccount" />
+                  </Link>
                 </Tooltip>
               ) : (
                 <Tooltip
@@ -179,36 +176,25 @@ const AppActions: React$ComponentType<Props> = React.memo(
                     />
                   }
                 >
-                  <Button
-                    inverted
-                    style={{ display: "flex" }}
-                    fontSize={3}
+                  <Link
+                    iconPosition="left"
                     onClick={onSupportLink}
-                    event="Manager SupportLink Click"
-                    eventProperties={{
-                      appName: name,
-                      appVersion: app.version,
-                    }}
+                    Icon={Icons.LinkMedium}
+                    type="shade"
                   >
-                    <Box horizontal alignContent="center" justifyContent="center">
-                      <LinkIcon size={16} />
-                      <Text ff="Inter" style={{ marginLeft: 8 }}>
-                        <Trans i18nKey="manager.applist.item.learnMore" />
-                      </Text>
-                    </Box>
-                  </Button>
+                    <Trans i18nKey="manager.applist.item.learnMore" />
+                  </Link>
                 </Tooltip>
               )
             ) : null}
             {appStoreView && installed && (
-              <SuccessInstall>
-                <IconCheck size={20} />
-                <Text ff="Inter|SemiBold" fontSize={4}>
+              <Flex flexDirection="row" alignItems="center" justifyContent="center">
+                <Icons.CheckAloneMedium size={15} color="palette.success.c100" />
+                <Text ml="4px" variant="paragraph" fontWeight="medium" color="palette.success.c100">
                   <Trans i18nKey="manager.applist.item.installed" />
                 </Text>
-              </SuccessInstall>
+              </Flex>
             )}
-
             {!installed && (
               <Tooltip
                 content={
@@ -218,9 +204,10 @@ const AppActions: React$ComponentType<Props> = React.memo(
                 }
               >
                 <Button
-                  style={{ display: "flex" }}
+                  type="shade"
+                  Icon={Icons.ArrowToBottomMedium}
+                  iconPosition="left"
                   id={`appActionsInstall-${name}`}
-                  lighterPrimary
                   disabled={!canInstall || notEnoughMemoryToInstall}
                   onClick={onInstall}
                   event="Manager Install Click"
@@ -229,10 +216,7 @@ const AppActions: React$ComponentType<Props> = React.memo(
                     appVersion: app.version,
                   }}
                 >
-                  <IconArrowDown size={14} />
-                  <Text style={{ marginLeft: 8 }}>
-                    <Trans i18nKey="manager.applist.item.install" />
-                  </Text>
+                  <Trans i18nKey="manager.applist.item.install" />
                 </Button>
               </Tooltip>
             )}
@@ -243,18 +227,12 @@ const AppActions: React$ComponentType<Props> = React.memo(
                   <Trans i18nKey="manager.applist.item.removeTooltip" values={{ appName: name }} />
                 }
               >
-                <Button
-                  style={{ padding: 13 }}
-                  onClick={onUninstall}
+                <Link
                   id={`appActionsUninstall-${name}`}
-                  event="Manager Uninstall Click"
-                  eventProperties={{
-                    appName: name,
-                    appVersion: app.version,
-                  }}
-                >
-                  <IconTrash color={colors.grey} size={14} />
-                </Button>
+                  onClick={onUninstall}
+                  Icon={Icons.TrashMedium}
+                  type="shade"
+                />
               </Tooltip>
             )}
           </>
@@ -263,12 +241,12 @@ const AppActions: React$ComponentType<Props> = React.memo(
           updating &&
           !uninstalling &&
           installed && (
-            <SuccessInstall>
-              <IconCheck size={16} />
-              <Text ff="Inter|SemiBold" fontSize={4}>
+            <Flex flexDirection="row" alignItems="center" justifyContent="center">
+              <Icons.CheckAloneMedium size={15} color="palette.success.c100" />
+              <Text ml="4px" variant="paragraph" fontWeight="medium" color="palette.success.c100">
                 <Trans i18nKey="manager.applist.item.updated" />
               </Text>
-            </SuccessInstall>
+            </Flex>
           )
         )}
       </AppActionsWrapper>

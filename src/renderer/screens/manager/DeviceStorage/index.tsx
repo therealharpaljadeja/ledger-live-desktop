@@ -29,9 +29,12 @@ type Props = {
 
 const InfoParticle = ({ label, value }: { label: string; value: string }) => {
   return (
-    <Text ff="Inter|Medium" color="palette.neutral.c80" type="navigation" fontSize="12px" mr="24px">
+    <Text variant="small" color="palette.neutral.c80" mr="24px">
       {label}
-      <Text color="palette.neutral.c100"> {value}</Text>
+      <Text variant="small" color="palette.neutral.c100">
+        {" "}
+        {value}
+      </Text>
     </Text>
   );
 };
@@ -58,7 +61,7 @@ const DeviceStorage = ({
       <DeviceIllustration height={132} width={120} deviceId={deviceModel?.id} />
       <Flex p="16px 0px 16px 16px" flexDirection="column" flex={1}>
         <Flex horizontal mb="8px" alignItems="center">
-          <Text type="h3" uppercase color="palette.neutral.c100" fontSize="28px">
+          <Text variant="h3" fontWeight="medium" uppercase color="palette.neutral.c100">
             {deviceModel.productName}
           </Text>
           <Box ml={2}>
@@ -71,7 +74,7 @@ const DeviceStorage = ({
           <Tag active type="opacity" mr="8px">
             v{deviceInfo.version}
           </Tag>
-          <Text ff="Inter|Medium" color="palette.neutral.c80" type="small">
+          <Text variant="small" fontWeight="medium" color="palette.neutral.c80">
             {firmwareOutdated ? (
               <Trans
                 i18nKey="v3.manager.deviceStorage.firmwareAvailable"
@@ -122,7 +125,7 @@ const DeviceStorage = ({
             />
           </Flex>
           <Flex horizontal alignItems="center">
-            <Text uppercase variant="subtitle" ff="Inter|SemiBold" color="palette.light.neutral.c80" fontSize={3}>
+            <Text uppercase variant="subtitle" color="palette.light.neutral.c80">
               {isIncomplete ? (
                 <Trans i18nKey="manager.deviceStorage.incomplete" />
               ) : distribution.freeSpaceBytes > 0 ? (

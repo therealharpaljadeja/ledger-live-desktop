@@ -3,26 +3,25 @@ import { useNotEnoughMemoryToInstall } from "@ledgerhq/live-common/lib/apps/reac
 import { getCryptoCurrencyById, isCurrencySupported } from "@ledgerhq/live-common/lib/currencies";
 import { App } from "@ledgerhq/live-common/lib/types/manager";
 import { State, Action, InstalledItem } from "@ledgerhq/live-common/lib/apps/types";
-
+import { Text, Icons, Flex } from "@ledgerhq/react-ui";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
 
 import ByteSize from "~/renderer/components/ByteSize";
-import Text from "~/renderer/components/Text";
 import Box from "~/renderer/components/Box";
 
-import IconCheckFull from "~/renderer/icons/CheckFull";
 import AppActions from "./AppActions";
 
 import AppIcon from "./AppIcon";
 
 const AppRow = styled.div`
   display: flex;
+  /* background-color: lightgreen; */
   flex-direction: row;
   align-items: center;
-  border-top: 1px solid ${p => p.theme.colors.palette.text.shade10};
-  padding: 20px;
-  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  padding: 6px 0px;
 `;
 
 const AppName = styled.div`
@@ -91,13 +90,13 @@ const Item: React.ComponentType<Props> = ({
 
   return (
     <AppRow id={`managerAppsList-${name}`}>
-      <Box flex="0.7" horizontal>
+      <Flex flex="0.7" horizontal>
         <AppIcon app={app} />
         <AppName>
-          <Text ff="Inter|Bold" color="palette.text.shade100" fontSize={3}>{`${app.displayName}${
+          <Text type="paragraph" fontWeight="medium" color="palette.neutral.c100">{`${app.displayName}${
             currency ? ` (${currency.ticker})` : ""
           }`}</Text>
-          <Text ff="Inter|Regular" color="palette.text.shade60" fontSize={3}>
+          <Text variant="small" color="palette.neutral.c70">
             <Trans
               i18nKey="manager.applist.item.version"
               values={{
@@ -106,30 +105,30 @@ const Item: React.ComponentType<Props> = ({
             />
           </Text>
         </AppName>
-      </Box>
+      </Flex>
       <AppSize>
-        <ByteSize
-          value={
-            ((installed && installed.blocks) || 0) * deviceModel.getBlockSize(deviceInfo.version) ||
-            app.bytes ||
-            0
-          }
-          deviceModel={deviceModel}
-          firmwareVersion={deviceInfo.version}
-        />
+        <Text variant="small" color="palette.neutral.c70">
+          <ByteSize
+            value={
+              ((installed && installed.blocks) || 0) * deviceModel.getBlockSize(deviceInfo.version) ||
+              app.bytes ||
+              0
+            }
+            deviceModel={deviceModel}
+            firmwareVersion={deviceInfo.version}
+          />
+        </Text>
       </AppSize>
-      <Box flex="0.6" horizontal alignContent="center" justifyContent="center">
+      <Flex flex="0.6" flexDirection="row" alignItems="center" justifyContent="center">
         {isLiveSupported && (
           <>
-            <Box pr={2}>
-              <IconCheckFull size={16} />
-            </Box>
-            <Text ml={1} ff="Inter|Regular" color="palette.text.shade60" fontSize={3}>
+            <Icons.CircledCheckMedium size="20px" color="palette.success.c100" />
+            <Text variant="small" ml="6px" color="palette.neutral.c70">
               <Trans i18nKey="manager.applist.item.supported" />
             </Text>
           </>
         )}
-      </Box>
+      </Flex>
       <AppActions
         state={state}
         app={app}
