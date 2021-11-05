@@ -8,7 +8,7 @@ import manager from "@ledgerhq/live-common/lib/manager";
 
 import { App } from "@ledgerhq/live-common/lib/types/manager";
 import { State, Action, InstalledItem } from "@ledgerhq/live-common/lib/apps/types";
-import { Flex, Text, Icons } from "@ledgerhq/react-ui";
+import { Flex, Text, Icons, Tooltip } from "@ledgerhq/react-ui";
 import Link from "@ledgerhq/react-ui/components/cta/Link";
 
 import styled from "styled-components";
@@ -18,7 +18,6 @@ import { openURL } from "~/renderer/linking";
 import { urls } from "~/config/urls";
 
 import OldText from "~/renderer/components/Text";
-import Tooltip from "~/renderer/components/Tooltip";
 import Button from "~/renderer/components/Button";
 import Progress from "~/renderer/screens/manager/AppsList/Progress";
 import Box from "~/renderer/components/Box/Box";
@@ -157,15 +156,17 @@ const AppActions: React$ComponentType<Props> = React.memo(
                     )
                   }
                 >
-                  <Link
-                    iconPosition="left"
-                    onClick={onAddAccount}
-                    disabled={!canAddAccount}
-                    Icon={Icons.WalletAddMedium}
-                    type="shade"
-                  >
-                    <Trans i18nKey="manager.applist.item.addAccount" />
-                  </Link>
+                  <div>
+                    <Link
+                      iconPosition="left"
+                      onClick={onAddAccount}
+                      disabled={!canAddAccount}
+                      Icon={Icons.WalletAddMedium}
+                      type="shade"
+                    >
+                      <Trans i18nKey="manager.applist.item.addAccount" />
+                    </Link>
+                  </div>
                 </Tooltip>
               ) : (
                 <Tooltip
@@ -176,14 +177,16 @@ const AppActions: React$ComponentType<Props> = React.memo(
                     />
                   }
                 >
-                  <Link
-                    iconPosition="left"
-                    onClick={onSupportLink}
-                    Icon={Icons.LinkMedium}
-                    type="shade"
-                  >
-                    <Trans i18nKey="manager.applist.item.learnMore" />
-                  </Link>
+                  <div>
+                    <Link
+                      iconPosition="left"
+                      onClick={onSupportLink}
+                      Icon={Icons.LinkMedium}
+                      type="shade"
+                    >
+                      <Trans i18nKey="manager.applist.item.learnMore" />
+                    </Link>
+                  </div>
                 </Tooltip>
               )
             ) : null}
@@ -197,27 +200,26 @@ const AppActions: React$ComponentType<Props> = React.memo(
             )}
             {!installed && (
               <Tooltip
-                content={
-                  notEnoughMemoryToInstall ? (
-                    <Trans i18nKey="manager.applist.item.notEnoughSpace" />
-                  ) : null
-                }
+                disabled={!notEnoughMemoryToInstall}
+                content={<Trans i18nKey="manager.applist.item.notEnoughSpace" />}
               >
-                <Button
-                  type="shade"
-                  Icon={Icons.ArrowToBottomMedium}
-                  iconPosition="left"
-                  id={`appActionsInstall-${name}`}
-                  disabled={!canInstall || notEnoughMemoryToInstall}
-                  onClick={onInstall}
-                  event="Manager Install Click"
-                  eventProperties={{
-                    appName: name,
-                    appVersion: app.version,
-                  }}
-                >
-                  <Trans i18nKey="manager.applist.item.install" />
-                </Button>
+                <div>
+                  <Button
+                    type="shade"
+                    Icon={Icons.ArrowToBottomMedium}
+                    iconPosition="left"
+                    id={`appActionsInstall-${name}`}
+                    disabled={!canInstall || notEnoughMemoryToInstall}
+                    onClick={onInstall}
+                    event="Manager Install Click"
+                    eventProperties={{
+                      appName: name,
+                      appVersion: app.version,
+                    }}
+                  >
+                    <Trans i18nKey="manager.applist.item.install" />
+                  </Button>
+                </div>
               </Tooltip>
             )}
             {(((installed || !installedAvailable) && !appStoreView && !onlyUpdate) ||
@@ -227,12 +229,14 @@ const AppActions: React$ComponentType<Props> = React.memo(
                   <Trans i18nKey="manager.applist.item.removeTooltip" values={{ appName: name }} />
                 }
               >
-                <Link
-                  id={`appActionsUninstall-${name}`}
-                  onClick={onUninstall}
-                  Icon={Icons.TrashMedium}
-                  type="shade"
-                />
+                <div>
+                  <Link
+                    id={`appActionsUninstall-${name}`}
+                    onClick={onUninstall}
+                    Icon={Icons.TrashMedium}
+                    type="shade"
+                  />
+                </div>
               </Tooltip>
             )}
           </>
