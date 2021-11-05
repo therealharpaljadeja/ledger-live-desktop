@@ -9,7 +9,6 @@ import manager from "@ledgerhq/live-common/lib/manager";
 import { App } from "@ledgerhq/live-common/lib/types/manager";
 import { State, Action, InstalledItem } from "@ledgerhq/live-common/lib/apps/types";
 import { Flex, Text, Icons, Tooltip } from "@ledgerhq/react-ui";
-import Link from "@ledgerhq/react-ui/components/cta/Link";
 
 import styled from "styled-components";
 import { Trans } from "react-i18next";
@@ -17,18 +16,9 @@ import { Trans } from "react-i18next";
 import { openURL } from "~/renderer/linking";
 import { urls } from "~/config/urls";
 
-import OldText from "~/renderer/components/Text";
+import Link from "~/renderer/components/Link";
 import Button from "~/renderer/components/Button";
 import Progress from "~/renderer/screens/manager/AppsList/Progress";
-import Box from "~/renderer/components/Box/Box";
-
-import { colors } from "~/renderer/styles/theme";
-
-import IconCheck from "~/renderer/icons/Check";
-import IconTrash from "~/renderer/icons/Trash";
-import IconArrowDown from "~/renderer/icons/ArrowDown";
-import LinkIcon from "~/renderer/icons/LinkIcon";
-import { track } from "~/renderer/analytics/segment";
 
 const AppActionsWrapper = styled.div`
   display: flex;
@@ -90,33 +80,15 @@ const AppActions: React$ComponentType<Props> = React.memo(
     }, [dispatch, name, needsInstallDeps, setAppInstallDep]);
 
     const onUninstall = useCallback(() => {
-      const event = "Manager Uninstall Click";
-      const eventProperties = {
-        appName: name,
-        appVersion: app.version,
-      };
-      track(event, eventProperties);
       if (needsUninstallDeps && setAppUninstallDep) setAppUninstallDep(needsUninstallDeps);
       else dispatch({ type: "uninstall", name });
     }, [dispatch, name, needsUninstallDeps, setAppUninstallDep]);
 
     const onAddAccount = useCallback(() => {
       if (addAccount) addAccount();
-      const event = "Manager AddAccount Click";
-      const eventProperties = {
-        appName: name,
-        appVersion: app.version,
-      };
-      track(event, eventProperties);
     }, [addAccount, name, app]);
 
     const onSupportLink = useCallback(() => {
-      const event = "Manager SupportLink Click";
-      const eventProperties = {
-        appName: name,
-        appVersion: app.version,
-      };
-      track(event, eventProperties);
       openURL(urls.appSupport[app.name] || urls.appSupport.default);
     }, [app.name]);
 
@@ -159,6 +131,11 @@ const AppActions: React$ComponentType<Props> = React.memo(
                   <div>
                     <Link
                       iconPosition="left"
+                      event="Manager AddAccount Click"
+                      eventProperties={{
+                        appName: name,
+                        appVersion: app.version,
+                      }}
                       onClick={onAddAccount}
                       disabled={!canAddAccount}
                       Icon={Icons.WalletAddMedium}
@@ -180,6 +157,11 @@ const AppActions: React$ComponentType<Props> = React.memo(
                   <div>
                     <Link
                       iconPosition="left"
+                      event="Manager SupportLink Click"
+                      eventProperties={{
+                        appName: name,
+                        appVersion: app.version,
+                      }}
                       onClick={onSupportLink}
                       Icon={Icons.LinkMedium}
                       type="shade"
@@ -232,6 +214,11 @@ const AppActions: React$ComponentType<Props> = React.memo(
                 <div>
                   <Link
                     id={`appActionsUninstall-${name}`}
+                    event="Manager Uninstall Click"
+                    eventProperties={{
+                      appName: name,
+                      appVersion: app.version,
+                    }}
                     onClick={onUninstall}
                     Icon={Icons.TrashMedium}
                     type="shade"
