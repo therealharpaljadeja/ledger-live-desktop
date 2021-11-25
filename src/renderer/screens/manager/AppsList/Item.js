@@ -115,6 +115,7 @@ const Item: React$ComponentType<Props> = ({
             app.bytes ||
             0
           }
+          formatFunction={Math.ceil}
           deviceModel={deviceModel}
           firmwareVersion={deviceInfo.version}
         />
