@@ -179,10 +179,10 @@ const TooltipContent = ({
   <TooltipContentWrapper>
     <Text>{name}</Text>
     <Text>
-      <ByteSize 
-        value={bytes} 
-        deviceModel={deviceModel} 
-        firmwareVersion={deviceInfo.version} 
+      <ByteSize
+        value={bytes}
+        deviceModel={deviceModel}
+        firmwareVersion={deviceInfo.version}
         formatFunction={Math.ceil}
       />
     </Text>
